@@ -1,0 +1,44 @@
+<html> 
+  <head> 
+    <title>Client Flow Example</title> 
+  </head> 
+  <body> 
+  <script> 
+    function displayUser(user) {
+      var userName = document.getElementById('userName');
+      var greetingText = document.createTextNode('Greetings, ' + user.name + '.');
+      userName.appendChild(greetingText);
+    }
+
+    var appID = "293377964060850";
+    /*
+    // somthing about checking the top.location here!?
+    */
+    if (window.location.hash.length == 0) {
+      var path = 'https://www.facebook.com/dialog/oauth?';
+      var tab = 'http://www.facebook.com/pages/NixonMcInnes-test-page/164120657011976?sk=app_293377964060850';
+      //tab = window.location;
+      var queryParams = ['client_id=' + appID, 'redirect_uri=' + tab, 'response_type=token'];
+      var query = queryParams.join('&');
+      var url = path + query;
+      // go to our auth page
+      top.location = url;
+    } 
+    // never hits this because we always just redirect to the auth
+    else {
+      var accessToken = window.location.hash.substring(1);
+      var path = "https://graph.facebook.com/me?";
+      var queryParams = [accessToken, 'callback=displayUser'];
+      var query = queryParams.join('&');
+      var url = path + query;
+
+      // use jsonp to call the graph
+      var script = document.createElement('script');
+      script.src = url;
+      document.body.appendChild(script);        
+    }
+  </script> 
+  <h1>Here we are</h1>
+  <p id="userName"></p> 
+  </body> 
+ </html>
